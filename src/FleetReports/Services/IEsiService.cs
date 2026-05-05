@@ -1,4 +1,4 @@
-﻿namespace FleetReports;
+﻿namespace FleetReports.Services;
 
 public interface IEsiService
 {
