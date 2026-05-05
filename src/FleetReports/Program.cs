@@ -33,11 +33,19 @@ builder.Services.AddHttpClient("zkb", client =>
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
+builder.Services.AddHttpClient("r2z2", client =>
+{
+    client.BaseAddress = new Uri("https://r2z2.zkillboard.com/ephemeral/");
+    client.DefaultRequestHeaders.Add("User-Agent", "fleet-reports/1.0");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
 builder.Services.AddScoped<IEsiService, EsiService>();
 builder.Services.AddSingleton<ISystemNameCacheService, SystemNameCacheService>();
 builder.Services.AddSingleton<IKillmailCacheService, KillmailCacheService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IZkillCharacterFetcher, ZkillCharacterFetcher>();
+builder.Services.AddScoped<IR2Z2HistoricalFetcher, R2Z2HistoricalFetcher>();
 
 var app = builder.Build();
 
