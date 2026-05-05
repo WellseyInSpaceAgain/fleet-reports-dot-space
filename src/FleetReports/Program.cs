@@ -1,4 +1,5 @@
 using FleetReports.Components;
+using FleetReports.Models;
 using LiteDB;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +12,8 @@ var dbPath = Path.Combine(builder.Environment.ContentRootPath, "fleet-reports.db
 builder.Services.AddSingleton<LiteDatabase>(_ =>
 {
     var db = new LiteDatabase(dbPath);
-    db.GetCollection<KillmailDocument>("killmails").EnsureIndex(x => KillmailTime);
-    db.GetCollection<ReportDocument>("reports").EnsureIndex(x => CreatedAt);
+    db.GetCollection<KillmailDocument>("killmails").EnsureIndex(x => x.KillmailTime);
+    db.GetCollection<ReportDocument>("reports").EnsureIndex(x => x.CreatedAt);
     return db;
 });
 
