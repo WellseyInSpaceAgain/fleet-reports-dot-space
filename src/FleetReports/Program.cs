@@ -13,6 +13,7 @@ builder.Services.AddSingleton<LiteDatabase>(_ =>
     var db = new LiteDatabase(dbPath);
     db.GetCollection<KillmailDocument>("killmails").EnsureIndex(x => KillmailTime);
     db.GetCollection<ReportDocument>("reports").EnsureIndex(x => CreatedAt);
+    return db;
 });
 
 var app = builder.Build();
