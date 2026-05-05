@@ -55,7 +55,7 @@
 ## Phase 1 — Foundation
 
 1. Create `.NET 10` Blazor Server project
-2. Add NuGet: `LiteDB`, `NanoidDotNet`, `Microsoft.Extensions.Http.Polly`
+2. Add NuGet: `LiteDB`, `Nanoid`, `Microsoft.Extensions.Http.Polly`
 3. Register `LiteDatabase` as singleton with `killmails` and `reports` collections
 4. Define domain models: `KillmailDocument`, `ReportDocument`, `FleetSubscription`
 

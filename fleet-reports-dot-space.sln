@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleetReports", "src\FleetReports\FleetReports.csproj", "{6A5AC116-E83C-6A34-D568-7667DAF7D2DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A5AC116-E83C-6A34-D568-7667DAF7D2DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A5AC116-E83C-6A34-D568-7667DAF7D2DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A5AC116-E83C-6A34-D568-7667DAF7D2DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A5AC116-E83C-6A34-D568-7667DAF7D2DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6A5AC116-E83C-6A34-D568-7667DAF7D2DF} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {085A63F8-8AE7-4C78-BBB6-FC9FB1389A60}
+	EndGlobalSection
+EndGlobal
