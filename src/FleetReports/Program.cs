@@ -1,10 +1,19 @@
 using FleetReports.Components;
+using LiteDB;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+var dbPath = Path.Combine(builder.Environment.ContentRootPath, "fleet-reports.db");
+builder.Services.AddSingleton<LiteDatabase>(_ =>
+{
+    var db = new LiteDatabase(dbPath);
+    db.GetCollection<KillmailDocument>("killmails").EnsureIndex(x => KillmailTime);
+    db.GetCollection<ReportDocument>("reports").EnsureIndex(x => CreatedAt);
+});
 
 var app = builder.Build();
 
