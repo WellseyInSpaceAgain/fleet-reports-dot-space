@@ -18,8 +18,26 @@ builder.Services.AddSingleton<LiteDatabase>(_ =>
     return db;
 });
 
-builder.Services.AddHttpClient<IEsiService, EsiService>();
+builder.Services.AddHttpClient("esi", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    client.BaseAddress = new Uri("https://esi.evetech.net/latest/");
+    client.DefaultRequestHeaders.Add("User-Agent", config["Esi:UserAgent"]);
+    client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
+});
+
+builder.Services.AddHttpClient("zkb", client =>
+{
+    client.BaseAddress = new Uri("https://zkillboard.com/");
+    client.DefaultRequestHeaders.Add("User-Agent", "fleet-reports/1.0");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+builder.Services.AddScoped<IEsiService, EsiService>();
+builder.Services.AddSingleton<ISystemNameCacheService, SystemNameCacheService>();
+builder.Services.AddSingleton<IKillmailCacheService, KillmailCacheService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
+builder.Services.AddScoped<IZkillCharacterFetcher, ZkillCharacterFetcher>();
 
 var app = builder.Build();
 

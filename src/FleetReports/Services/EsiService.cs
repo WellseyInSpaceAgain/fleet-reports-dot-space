@@ -1,27 +1,19 @@
 ﻿namespace FleetReports.Services;
 
-public class EsiService : IEsiService
+public class EsiService(IHttpClientFactory httpClientFactory) : IEsiService
 {
-    private readonly HttpClient _client;
-
-    public EsiService(HttpClient client, IConfiguration config)
-    {
-        client.BaseAddress = new Uri("https://esi.evetech.net/latest/");
-        client.DefaultRequestHeaders.Add("User-Agent", config["Esi:UserAgent"]);
-        client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
-        _client = client;
-    }
-
     public async Task<T?> GetAsync<T>(string path)
     {
-        var response = await _client.GetAsync(path);
+        var client = httpClientFactory.CreateClient("esi");
+        var response = await client.GetAsync(path);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
     public async Task<T?> PostAsync<T>(string path, object body)
     {
-        var response = await _client.PostAsJsonAsync(path, body);
+        var client = httpClientFactory.CreateClient("esi");
+        var response = await client.PostAsJsonAsync(path, body);
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<T>();
     }
