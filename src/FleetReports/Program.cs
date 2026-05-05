@@ -1,5 +1,6 @@
 using FleetReports.Components;
 using FleetReports.Models;
+using FleetReports.Services;
 using LiteDB;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,9 @@ builder.Services.AddSingleton<LiteDatabase>(_ =>
     db.GetCollection<ReportDocument>("reports").EnsureIndex(x => x.CreatedAt);
     return db;
 });
+
+builder.Services.AddHttpClient<IEsiService, EsiService>();
+builder.Services.AddScoped<ICharacterService, CharacterService>();
 
 var app = builder.Build();
 
