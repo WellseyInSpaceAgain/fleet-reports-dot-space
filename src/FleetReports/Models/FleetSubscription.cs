@@ -1,6 +1,6 @@
 ﻿namespace FleetReports.Models;
 
-public class FleetSubscription
+public record FleetSubscription
 {
     public string ReportId { get; set; } = string.Empty;
     public HashSet<int> FleetMemberIds { get; set; } = [];

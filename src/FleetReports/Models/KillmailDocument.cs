@@ -1,6 +1,6 @@
 namespace FleetReports.Models;
 
-public class KillmailDocument
+public record KillmailDocument
 {
     public int Id { get; set; }
     public string Hash { get; set; } = string.Empty;
@@ -8,6 +8,7 @@ public class KillmailDocument
     public string SystemName { get; set; } = string.Empty;
     public int ShipTypeId { get; set; }
     public decimal TotalValue { get; set; }
+    public int[] AttackerIds { get; set; } = [];
     public int? VictimId { get; set; }
     public int? TopDamageId { get; set; }
     public int? FinalBlowId { get; set; }

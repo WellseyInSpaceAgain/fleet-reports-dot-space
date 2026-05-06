@@ -2,7 +2,7 @@
 
 namespace FleetReports.Models;
 
-public class EsiSystemResponse
+public record EsiSystemResponse
 {
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;

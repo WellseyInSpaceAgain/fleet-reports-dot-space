@@ -2,7 +2,7 @@
 
 namespace FleetReports.Models;
 
-public class R2Z2KillmailEntry
+public record R2Z2KillmailEntry
 {
     [JsonPropertyName("killmail_id")]
     public int KillmailId { get; set; }
@@ -23,7 +23,7 @@ public class R2Z2KillmailEntry
     public R2Z2ZkbBlock Zkb { get; set; } = new();
 }
 
-public class R2Z2ZkbBlock
+public record R2Z2ZkbBlock
 {
     [JsonPropertyName("hash")]
     public string Hash { get; set; } = string.Empty;
@@ -32,7 +32,7 @@ public class R2Z2ZkbBlock
     public decimal TotalValue { get; set; }
 }
 
-public class R2Z2SequenceResponse
+public record R2Z2SequenceResponse
 {
     [JsonPropertyName("sequence")]
     public int Sequence { get; set; }

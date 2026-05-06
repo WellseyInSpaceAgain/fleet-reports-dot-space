@@ -2,7 +2,7 @@
 
 namespace FleetReports.Models;
 
-public class EsiKillmailAttacker
+public record EsiKillmailAttacker
 {
     [JsonPropertyName("character_id")]
     public int? CharacterId { get; set; }

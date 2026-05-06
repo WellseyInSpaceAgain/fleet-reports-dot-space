@@ -46,6 +46,9 @@ builder.Services.AddSingleton<IKillmailCacheService, KillmailCacheService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IZkillCharacterFetcher, ZkillCharacterFetcher>();
 builder.Services.AddScoped<IR2Z2HistoricalFetcher, R2Z2HistoricalFetcher>();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<IFleetSubscriptionRegistry, NoOpFleetSubscriptionRegistry>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 var app = builder.Build();
 

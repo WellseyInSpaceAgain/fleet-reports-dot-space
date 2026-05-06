@@ -2,7 +2,7 @@
 
 namespace FleetReports.Models;
 
-public class ZkbKillmailEntry
+public record ZkbKillmailEntry
 {
     [JsonPropertyName("killmail_id")]
     public int KillmailId { get; set; }
@@ -14,7 +14,7 @@ public class ZkbKillmailEntry
     public ZkbInfo Zkb { get; set; } = new();
 }
 
-public class ZkbInfo
+public record ZkbInfo
 {
     [JsonPropertyName("totalValue")]
     public decimal TotalValue { get; set; }

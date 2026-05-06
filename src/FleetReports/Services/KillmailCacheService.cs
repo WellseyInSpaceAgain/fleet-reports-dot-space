@@ -30,6 +30,9 @@ public class KillmailCacheService(LiteDatabase db, ISystemNameCacheService syste
             KillmailTime = killmail.KillmailTime,
             SystemName = systemName,
             ShipTypeId = killmail.Victim.ShipTypeId,
+            AttackerIds = killmail.Attackers
+                .Where(x => x.CharacterId.HasValue)
+                .Select(x => x.CharacterId!.Value).ToArray(),
             VictimId = killmail.Victim.CharacterId,
             TopDamageId = topDamage?.CharacterId,
             FinalBlowId = finalBlow?.CharacterId,
