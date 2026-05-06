@@ -47,8 +47,11 @@ builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IZkillCharacterFetcher, ZkillCharacterFetcher>();
 builder.Services.AddScoped<IR2Z2HistoricalFetcher, R2Z2HistoricalFetcher>();
 builder.Services.AddSingleton(TimeProvider.System);
-builder.Services.AddSingleton<IFleetSubscriptionRegistry, NoOpFleetSubscriptionRegistry>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddSingleton<R2Z2BackgroundService>();
+builder.Services.AddSingleton<IFleetSubscriptionRegistry>(sp => sp.GetRequiredService<R2Z2BackgroundService>());
+builder.Services.AddHostedService(sp => sp.GetRequiredService<R2Z2BackgroundService>());
+builder.Services.AddSingleton<IReportUpdateNotifier, ReportUpdateNotifier>();
 
 var app = builder.Build();
 
