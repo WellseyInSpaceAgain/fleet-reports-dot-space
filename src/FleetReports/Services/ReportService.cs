@@ -14,8 +14,9 @@ public class ReportService(
 {
     private readonly ILiteCollection<ReportDocument> _reports = db.GetCollection<ReportDocument>("reports");
     
-    public async Task<string> CreateReportAsync(string[] names, DateTime startTime, DateTime endTime)
+    public async Task<string> CreateReportAsync(string[] names, DateTime startTime, DateTime endTime, IProgress<string>? progress = null)
     {
+        progress?.Report("Resolving characters...");
         var nameMap = await characterService.ResolveNamesAsync(names);
         var memberIds = nameMap.Values.Distinct().ToArray();
         var memberSet = memberIds.ToHashSet();
@@ -23,6 +24,8 @@ public class ReportService(
         var now = timeProvider.GetUtcNow().UtcDateTime;
         var cutoff = now.AddHours(-24);
 
+        var fetchMessage = endTime > cutoff ? "Fetching kills from R2Z2…" : "Fetching kills from zKillboard…";
+        progress?.Report(fetchMessage);
         IReadOnlyList<KillmailDocument> documents = endTime > cutoff
             ? await r2Z2HistoricalFetcher.FetchAsync(memberIds, startTime, endTime)
             : await zkillCharacterFetcher.FetchAsync(memberIds, startTime, endTime);
@@ -58,6 +61,7 @@ public class ReportService(
             .OrderByDescending(g => g.Count())
             .FirstOrDefault()?.Key;
 
+        progress?.Report("Building report...");
         var id = await Nanoid.GenerateAsync(size: 10);
 
         var report = new ReportDocument

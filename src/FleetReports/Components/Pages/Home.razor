@@ -1,7 +1,52 @@
 ﻿@page "/"
+@using FleetReports.Services
+@rendermode InteractiveServer
+@inject IReportService ReportService
+@inject NavigationManager Nav
+@inject TimeProvider TimeProvider
+<PageTitle>Fleet Reports</PageTitle>
 
-<PageTitle>Home</PageTitle>
+<h1>New Fleet Report</h1>
 
-<h1>Hello, world!</h1>
+<EditForm Model="this" OnValidSubmit="HandleSubmit">
+    <div class="mb-3">
+        <label class="form-label">Fleet members (one per line)</label>
+        <textarea class="form-control" rows="8" @bind="_names"></textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Start time (UTC)</label>
+        <input type="datetime-local" class="form-control" @bind="_startTime" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">End time (UTC)</label>
+        <input type="datetime-local" class="form-control" @bind="_endTime" />
+    </div>
+    <button type="submit" class="btn btn-primary" disabled="@_running">Generate Report</button>
+</EditForm>
 
-Welcome to your new app.
+<ReportProgress Message="@_progress" />
+
+@code {
+    string _names = "";
+    DateTime _startTime;
+    DateTime _endTime;
+
+    protected override void OnInitialized()
+    {
+        DateTime now = TimeProvider.GetUtcNow().UtcDateTime;
+        _startTime = now;
+        _endTime = now.AddHours(1);
+    }
+
+    bool _running;
+    string? _progress;
+
+    async Task HandleSubmit()
+    {
+        _running = true;
+        var progress = new Progress<string>(msg => { _progress = msg; InvokeAsync(StateHasChanged); });
+        var names = _names.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var id = await ReportService.CreateReportAsync(names, _startTime, _endTime, progress);
+        Nav.NavigateTo($"/r/{id}");
+    }
+}

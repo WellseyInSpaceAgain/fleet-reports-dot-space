@@ -61,13 +61,13 @@ public class ZkillCharacterFetcher(IHttpClientFactory httpClientFactory, IKillma
     private async Task<KillmailDocument?> ResolveEntryAsync(ZkbKillmailEntry entry, DateTime startTime, DateTime endTime)
     {
         var cached = await cache.GetAsync(entry.KillmailId);
-        if (cached is not null && cached.Hash == entry.Hash)
+        if (cached is not null && cached.Hash == entry.Zkb.Hash)
         {
             return cached.KillmailTime >= startTime && cached.KillmailTime <= endTime
                 ? cached : null;
         }
 
-        var killmail = await esi.GetAsync<EsiKillmail>($"killmails/{entry.KillmailId}/{entry.Hash}/");
+        var killmail = await esi.GetAsync<EsiKillmail>($"killmails/{entry.KillmailId}/{entry.Zkb.Hash}/");
         if (killmail is null)
         {
             return null;
@@ -75,7 +75,7 @@ public class ZkillCharacterFetcher(IHttpClientFactory httpClientFactory, IKillma
 
         if (killmail.KillmailTime >= startTime && killmail.KillmailTime <= endTime)
         {
-            var document = await cache.UpsertAsync(killmail, entry.Hash, entry.Zkb.TotalValue);
+            var document = await cache.UpsertAsync(killmail, entry.Zkb.Hash, entry.Zkb.TotalValue);
             return document;
         }
         else

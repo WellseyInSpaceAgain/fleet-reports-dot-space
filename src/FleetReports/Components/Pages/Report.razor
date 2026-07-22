@@ -1,0 +1,105 @@
+﻿@page "/r/{ShortId}"
+@using FleetReports.Models
+@using FleetReports.Services
+@using LiteDB
+@rendermode InteractiveServer
+@inject LiteDatabase Db
+@inject IReportUpdateNotifier Notifier
+@implements IDisposable
+
+@if (_notFound)
+{
+    <h3>Report not found</h3>
+    <p>No report exists for this link. It may have expired or the URL is incorrect.</p>
+}
+else if (_report is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <PageTitle>Fleet Report</PageTitle>
+
+    @if (_report.EndTime > DateTime.UtcNow)
+    {
+        <span class="badge bg-danger">LIVE</span>
+    }
+
+    <h2>Fleet Report</h2>
+
+    <div class="d-flex gap-4 mb-3">
+        <div><strong>Fleet</strong><br />@_report.FleetMemberNames.Length pilots</div>
+        <div><strong>Kills</strong><br />@_report.TotalKills</div>
+        <div><strong>ISK Destroyed</strong><br />@_report.IskDestroyed.ToString("N0")</div>
+        <div><strong>Losses</strong><br />@_report.TotalLosses</div>
+        <div><strong>ISK Lost</strong><br />@_report.IskLost.ToString("N0")</div>
+    </div>
+
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Time</th><th>Ship</th><th>ISK</th><th>System</th>
+                <th>Victim</th><th>Top Damage</th><th>Final Blow</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var k in _kills)
+            {
+                <tr>
+                    <td>@k.KillmailTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td><img src="https://images.evetech.net/types/@k.ShipTypeId/render?size=32" /></td>
+                    <td>@k.TotalValue.ToString("N0")</td>
+                    <td>@k.SystemName</td>
+                    <td>@if (k.VictimId.HasValue) { <img src="https://images.evetech.net/characters/@k.VictimId/portrait?size=32" /> }</td>
+                    <td>@if (k.TopDamageId.HasValue) { <img src="https://images.evetech.net/characters/@k.TopDamageId/portrait?size=32" /> }</td>
+                    <td>@if (k.FinalBlowId.HasValue) { <img src="https://images.evetech.net/characters/@k.FinalBlowId/portrait?size=32" /> }</td>
+                    <td><a href="https://zkillboard.com/kill/@k.Id/" target="_blank">zkill</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string ShortId { get; set; } = "";
+
+    ReportDocument? _report;
+    List<KillmailDocument> _kills = [];
+    bool _notFound;
+
+    protected override void OnInitialized()
+    {
+        var col = Db.GetCollection<ReportDocument>("reports");
+        _report = col.FindById(ShortId);
+
+        if (_report is null)
+        {
+            _notFound = true;
+            return;
+        }
+
+        _kills = LoadKills(_report);
+        Notifier.Subscribe(ShortId, OnKillsUpdated);
+    }
+
+    void OnKillsUpdated()
+    {
+        _report = Db.GetCollection<ReportDocument>("reports").FindById(ShortId);
+        _kills = LoadKills(_report!);
+        InvokeAsync(StateHasChanged);
+    }
+
+    List<KillmailDocument> LoadKills(ReportDocument report)
+    {
+        var allIds = report.KillIds.Union(report.LossIds)
+            .Select(id => new BsonValue(id));
+
+        return Db.GetCollection<KillmailDocument>("killmails")
+                .Find(Query.In("_id", allIds))
+                .OrderBy(k => k.KillmailTime)
+                .ToList();
+    }
+
+    public void Dispose() => Notifier.Unsubscribe(ShortId);
+}

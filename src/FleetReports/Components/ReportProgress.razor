@@ -1,0 +1,14 @@
+﻿@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="d-flex align-items-center gap-2">
+        <div class="spinner-border spinner-border-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <span>@Message</span>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? Message { get; set; }
+}

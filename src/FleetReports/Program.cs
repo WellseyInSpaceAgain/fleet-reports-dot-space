@@ -23,7 +23,10 @@ builder.Services.AddHttpClient("esi", (sp, client) =>
     var config = sp.GetRequiredService<IConfiguration>();
     client.BaseAddress = new Uri("https://esi.evetech.net/latest/");
     client.DefaultRequestHeaders.Add("User-Agent", config["Esi:UserAgent"]);
-    client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    AutomaticDecompression = System.Net.DecompressionMethods.GZip
 });
 
 builder.Services.AddHttpClient("zkb", client =>
